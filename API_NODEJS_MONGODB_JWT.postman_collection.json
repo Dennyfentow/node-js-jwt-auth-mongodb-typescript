@@ -1,0 +1,224 @@
+{
+	"info": {
+		"_postman_id": "xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx",
+		"name": "API_NODEJS_MONGODB_JWT",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "14935519"
+	},
+	"item": [
+		{
+			"name": "Cadastro de Usuário",
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n\t\"username\": \"usuarioteste\",\n\t\"email\": \"usuario@teste.com\",\n\t\"password\": \"senha123\"\n}"
+				},
+				"url": {
+					"raw": "{{base_url}}/api/auth/signup",
+					"host": ["{{base_url}}"],
+					"path": ["api", "auth", "signup"]
+				}
+			},
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Status code é 200 ou 201\", function () {",
+							"    pm.expect(pm.response.code).to.be.oneOf([200, 201]);",
+							"});",
+							"",
+							"pm.test(\"Resposta contém mensagem de sucesso\", function () {",
+							"    var jsonData = pm.response.json();",
+							"    pm.expect(jsonData).to.have.property('message');",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			]
+		},
+		{
+			"name": "Login",
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n\t\"username\": \"usuarioteste\",\n\t\"password\": \"senha123\"\n}"
+				},
+				"url": {
+					"raw": "{{base_url}}/api/auth/signin",
+					"host": ["{{base_url}}"],
+					"path": ["api", "auth", "signin"]
+				}
+			},
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Status code é 200\", function () {",
+							"    pm.response.to.have.status(200);",
+							"});",
+							"",
+							"pm.test(\"Resposta contém token\", function () {",
+							"    var jsonData = pm.response.json();",
+							"    pm.expect(jsonData).to.have.property('accessToken');",
+							"    pm.globals.set('auth_token', jsonData.accessToken);",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			]
+		},
+		{
+			"name": "Rota Pública (All)",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "{{base_url}}/api/test/all",
+					"host": ["{{base_url}}"],
+					"path": ["api", "test", "all"]
+				}
+			},
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Status code é 200\", function () {",
+							"    pm.response.to.have.status(200);",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			]
+		},
+		{
+			"name": "Rota de Usuário",
+			"request": {
+				"method": "GET",
+				"header": [
+					{
+						"key": "x-access-token",
+						"value": "{{auth_token}}"
+					}
+				],
+				"url": {
+					"raw": "{{base_url}}/api/test/user",
+					"host": ["{{base_url}}"],
+					"path": ["api", "test", "user"]
+				}
+			},
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Status code é 200\", function () {",
+							"    pm.response.to.have.status(200);",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			]
+		},
+		{
+			"name": "Rota de Moderador",
+			"request": {
+				"method": "GET",
+				"header": [
+					{
+						"key": "x-access-token",
+						"value": "{{auth_token}}"
+					}
+				],
+				"url": {
+					"raw": "{{base_url}}/api/test/mod",
+					"host": ["{{base_url}}"],
+					"path": ["api", "test", "mod"]
+				}
+			},
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Status code é 200 ou 403\", function () {",
+							"    pm.expect(pm.response.code).to.be.oneOf([200, 403]);",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			]
+		},
+		{
+			"name": "Rota de Administrador",
+			"request": {
+				"method": "GET",
+				"header": [
+					{
+						"key": "x-access-token",
+						"value": "{{auth_token}}"
+					}
+				],
+				"url": {
+					"raw": "{{base_url}}/api/test/admin",
+					"host": ["{{base_url}}"],
+					"path": ["api", "test", "admin"]
+				}
+			},
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Status code é 200 ou 403\", function () {",
+							"    pm.expect(pm.response.code).to.be.oneOf([200, 403]);",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			]
+		}
+	],
+	"event": [
+		{
+			"listen": "prerequest",
+			"script": {
+				"exec": [
+					"// Configurando a URL base",
+					"if (!pm.globals.has('base_url')) {",
+					"    pm.globals.set('base_url', 'http://localhost:3000');",
+					"}"
+				],
+				"type": "text/javascript"
+			}
+		}
+	],
+	"variable": [
+		{
+			"key": "base_url",
+			"value": "http://localhost:3000"
+		}
+	]
+}
