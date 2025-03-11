@@ -24,5 +24,7 @@ export default function(app: Application): void {
 
   router.post("/signin", controller.signin);
 
+  router.post("/signout", controller.signout);
+
   app.use('/api/auth', router);
 } 

@@ -90,3 +90,12 @@ export const signin = async (req: Request, res: Response): Promise<void> => {
     res.status(500).send({ message: (err as Error).message });
   }
 }; 
+
+export const signout = async (req: Request, res: Response): Promise<void> => {
+  try {
+    res.clearCookie("token");
+    res.status(200).send({ message: "Deslogado com sucesso!" });
+  } catch (err) {
+    res.status(500).send({ message: (err as Error).message });
+  }
+};
