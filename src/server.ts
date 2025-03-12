@@ -5,6 +5,8 @@ import db from './models';
 import dbConfig from './config/db.config';
 import authRoutes from './routes/auth.routes';
 import userRoutes from './routes/user.routes';
+import { limiter } from './limiter';
+import { requestLogger, errorLogger } from './middlewares/logger.middleware';
 
 dotenv.config({
   path: "./app.env"
@@ -28,6 +30,9 @@ app.use(express.json());
 // parse requests of content-type - application/x-www-form-urlencoded
 app.use(express.urlencoded({ extended: true }));
 
+// Aplicar middleware de logs antes de outros middlewares de rota
+app.use(requestLogger);
+
 const Role = db.role;
 
 db.mongoose
@@ -46,9 +51,14 @@ app.get("/", (req, res) => {
   res.json({ message: "Welcome to bezkoder application." });
 });
 
+// limiter
+app.use(limiter);
 // routes
 authRoutes(app);
 userRoutes(app);
+
+// Adicionar middleware de erro após todas as rotas
+app.use(errorLogger);
 
 // set port, listen for requests
 const PORT = process.env.PORT || 8080;

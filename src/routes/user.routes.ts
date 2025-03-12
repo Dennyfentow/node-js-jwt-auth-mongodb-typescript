@@ -22,6 +22,12 @@ export default function(app: Application): void {
   );
 
   router.get(
+    "/accept-terms",
+    [authJwt.verifyToken],
+    controller.acceptTerms
+  );
+
+  router.get(
     "/mod",
     [authJwt.verifyToken, authJwt.isModerator],
     controller.moderatorBoard
@@ -33,5 +39,5 @@ export default function(app: Application): void {
     controller.adminBoard
   );
 
-  app.use('/api/test', router);
+  app.use('/api/user', router);
 } 

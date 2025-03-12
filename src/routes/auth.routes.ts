@@ -26,5 +26,7 @@ export default function(app: Application): void {
 
   router.post("/signout", controller.signout);
 
+  router.get('/verify', controller.verify);
+
   app.use('/api/auth', router);
 } 
